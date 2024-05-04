@@ -1,12 +1,13 @@
 #!/usr/bin/python3
-"""prints all City objects
-from the database hbtn_0e_14_usa"""
+"""adds the State object “California”
+with the City “San Francisco”
+to the database hbtn_0e_100_usa"""
 
 if __name__ == "__main__":
 
     import sys
-    from model_state import Base, State
-    from model_city import City
+    from relationship_state import Base, State
+    from relationship_city import City
     from sqlalchemy import create_engine
     from sqlalchemy.orm import Session
     from sqlalchemy.schema import Table
@@ -17,8 +18,9 @@ if __name__ == "__main__":
     Base.metadata.create_all(engine)
 
     session = Session(engine)
-    for state, city in session.query(State, City)\
-                              .filter(City.state_id == State.id)\
-                              .order_by(City.id).all():
-            print("{}: ({}) {}".format(state.name, city.id, city.name))
+    new_city = City(name='San Francisco')
+    new = State(name='California')
+    new.cities.append(new_city)
+    session.add_all([new, new_city])
+    session.commit()
     session.close()

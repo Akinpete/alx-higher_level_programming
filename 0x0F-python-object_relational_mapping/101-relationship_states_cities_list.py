@@ -1,12 +1,12 @@
 #!/usr/bin/python3
-"""prints all City objects
-from the database hbtn_0e_14_usa"""
+"""lists all State objects, and corresponding City objects,
+contained in the database hbtn_0e_101_usa"""
 
 if __name__ == "__main__":
 
     import sys
-    from model_state import Base, State
-    from model_city import City
+    from relationship_state import Base, State
+    from relationship_city import City
     from sqlalchemy import create_engine
     from sqlalchemy.orm import Session
     from sqlalchemy.schema import Table
@@ -17,8 +17,8 @@ if __name__ == "__main__":
     Base.metadata.create_all(engine)
 
     session = Session(engine)
-    for state, city in session.query(State, City)\
-                              .filter(City.state_id == State.id)\
-                              .order_by(City.id).all():
-            print("{}: ({}) {}".format(state.name, city.id, city.name))
+    for state in session.query(State).order_by(State.id).all():
+        print("{}: {}".format(state.id, state.name))
+        for city in state.cities:
+            print("    {}: {}".format(city.id, city.name))
     session.close()
